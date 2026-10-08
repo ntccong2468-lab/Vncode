@@ -7,6 +7,10 @@ on:
         description: Build only the Windows test installer
         type: boolean
         default: true
+      msi_inspection_only:
+        description: Read-only inspection of the original MSI, no install/build/publication
+        type: boolean
+        default: false
   push:
     branches: [dev, main]
     paths-ignore:
@@ -18,7 +22,17 @@ permissions:
   contents: read
 
 jobs:
+  inspect-msi:
+    if: ${{ inputs.msi_inspection_only }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Inspect original MSI metadata without installation
+        shell: pwsh
+        run: ./tools/windows-side-by-side-smoke.ps1 -Version (node tools/release-version.mjs) -InspectOnly
+
   build-and-test:
+    if: ${{ !inputs.msi_inspection_only }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,10 +54,7 @@ jobs:
 
       - name: Verify JavaFX production and release contracts
         run: >-
-          node --test
-          tools/javafx-production-entrypoint.test.mjs
-          tools/release-version.test.mjs
-          tools/update-manifest.test.mjs
+          node --test tools/*.test.mjs
 
       - name: Run Java and FXML test suite
         shell: pwsh
@@ -51,30 +62,43 @@ jobs:
 
       - name: Build unsigned JavaFX EXE installer
         shell: cmd
+        env:
+          # The preceding step verified this checkout and produced these exact JARs.
+          VNCODE_REUSE_VERIFIED_BUILD: "true"
         run: build.bat exe
+
+      - name: Verify native Windows launcher and schema-3 history migration
+        shell: pwsh
+        run: ./tools/windows-native-smoke.ps1 -Version $env:APP_VERSION
+
+      - name: Verify installation beside WCode, fresh data and safe uninstall
+        shell: pwsh
+        run: ./tools/windows-side-by-side-smoke.ps1 -Version $env:APP_VERSION
 
       - name: Verify and name test installer
         shell: pwsh
         run: |
-          $installers = @(Get-ChildItem out -Filter 'WCode*.exe' -File)
+          $installers = @(Get-ChildItem out -Filter 'VN code*.exe' -File)
           if ($installers.Count -ne 1 -or $installers[0].Length -lt 1MB) {
             throw 'jpackage did not create exactly one non-empty EXE installer.'
           }
-          $target = Join-Path $PWD "out\WCode-$env:APP_VERSION-Ozon-Test.exe"
+          $target = Join-Path $PWD "out\VN-code-$env:APP_VERSION-Windows-x64.exe"
           if ($installers[0].FullName -cne $target) {
             Move-Item -LiteralPath $installers[0].FullName -Destination $target -Force
           }
           $hash = (Get-FileHash $target -Algorithm SHA256).Hash.ToLowerInvariant()
-          $checksum = Join-Path $PWD "out\WCode-$env:APP_VERSION-Ozon-Test.sha256"
-          "$hash  WCode-$env:APP_VERSION-Ozon-Test.exe" | Set-Content $checksum -Encoding ascii
+          $checksum = Join-Path $PWD "out\VN-code-$env:APP_VERSION-Windows-x64.sha256"
+          "$hash  VN-code-$env:APP_VERSION-Windows-x64.exe" | Set-Content $checksum -Encoding ascii
 
       - name: Preserve Windows test installer
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: WCode-${{ env.APP_VERSION }}-Ozon-Test-Windows-x64
+          name: VN-code-${{ env.APP_VERSION }}-Windows-x64
           path: |
-            out/WCode-${{ env.APP_VERSION }}-Ozon-Test.exe
-            out/WCode-${{ env.APP_VERSION }}-Ozon-Test.sha256
+            out/VN-code-${{ env.APP_VERSION }}-Windows-x64.exe
+            out/VN-code-${{ env.APP_VERSION }}-Windows-x64.sha256
+            out/native-smoke.json
+            out/side-by-side-smoke.json
           if-no-files-found: error
           retention-days: 14
 
@@ -113,10 +137,7 @@ jobs:
 
       - name: Verify JavaFX production and release contracts
         run: >-
-          node --test
-          tools/javafx-production-entrypoint.test.mjs
-          tools/release-version.test.mjs
-          tools/update-manifest.test.mjs
+          node --test tools/*.test.mjs
 
       - name: Run Java and FXML test suite
         run: |
@@ -137,27 +158,27 @@ jobs:
           expected_architecture="${{ matrix.expected_architecture }}"
           input="$PWD/target/jpackage-input"
           image_root="$PWD/test-image"
-          image="$image_root/WCode.app"
+          image="$image_root/VN code.app"
           mkdir -p "$input/lib" "$image_root" out
-          cp "target/FBSBarcode-$APP_VERSION.jar" "$input/"
+          cp "target/VNcode-$APP_VERSION.jar" "$input/"
           cp -R target/lib/. "$input/lib/"
 
-          jpackage --type app-image --name WCode --input "$input" \
-            --main-jar "FBSBarcode-$APP_VERSION.jar" \
-            --main-class com.tuandev.fbsbarcode.Launcher \
-            --dest "$image_root" --app-version "$APP_VERSION" --vendor TuanDev \
-            --mac-package-identifier com.tuandev.wcode \
+          jpackage --type app-image --name "VN code" --input "$input" \
+            --main-jar "VNcode-$APP_VERSION.jar" \
+            --main-class com.vncode.app.Launcher \
+            --dest "$image_root" --app-version "$APP_VERSION" --vendor "VN code" \
+            --mac-package-identifier com.vncode.app \
             --java-options "--enable-native-access=ALL-UNNAMED" \
             --jlink-options "--strip-native-commands --strip-debug --no-man-pages --no-header-files --bind-services"
 
-          test -x "$image/Contents/MacOS/WCode"
-          grep -F 'com.tuandev.fbsbarcode.Launcher' "$image/Contents/app/WCode.cfg"
-          file "$image/Contents/MacOS/WCode" | grep -F "$expected_architecture"
+          test -x "$image/Contents/MacOS/VN code"
+          grep -F 'com.vncode.app.Launcher' "$image/Contents/app/VN code.cfg"
+          file "$image/Contents/MacOS/VN code" | grep -F "$expected_architecture"
 
-          smoke_data="$(mktemp -d "$RUNNER_TEMP/wcode-macos-smoke.XXXXXX")"
-          smoke_log="$RUNNER_TEMP/wcode-macos-$architecture.log"
-          JAVA_TOOL_OPTIONS="-Dwcode.appdata.dir=$smoke_data" \
-            "$image/Contents/MacOS/WCode" >"$smoke_log" 2>&1 &
+          smoke_data="$(mktemp -d "$RUNNER_TEMP/vncode-macos-smoke.XXXXXX")"
+          smoke_log="$RUNNER_TEMP/vncode-macos-$architecture.log"
+          JAVA_TOOL_OPTIONS="-Dvncode.appdata.dir=$smoke_data" \
+            "$image/Contents/MacOS/VN code" >"$smoke_log" 2>&1 &
           smoke_pid=$!
           for attempt in {1..15}; do
             if ! kill -0 "$smoke_pid" 2>/dev/null; then
@@ -179,26 +200,26 @@ jobs:
           wait "$smoke_pid" || true
 
           ditto -c -k --sequesterRsrc --keepParent "$image" \
-            "out/WCode-$APP_VERSION-Ozon-Test-macos-$architecture.zip"
-          jpackage --type dmg --name WCode --app-image "$image" --dest out \
-            --app-version "$APP_VERSION" --vendor TuanDev
-          packages=(out/WCode*.dmg)
+            "out/VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.zip"
+          jpackage --type dmg --name "VN code" --app-image "$image" --dest out \
+            --app-version "$APP_VERSION" --vendor "VN code"
+          packages=(out/"VN code"*.dmg)
           test "${#packages[@]}" -eq 1
-          mv "${packages[0]}" "out/WCode-$APP_VERSION-Ozon-Test-macos-$architecture.dmg"
-          test -s "out/WCode-$APP_VERSION-Ozon-Test-macos-$architecture.dmg"
-          test -s "out/WCode-$APP_VERSION-Ozon-Test-macos-$architecture.zip"
+          mv "${packages[0]}" "out/VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.dmg"
+          test -s "out/VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.dmg"
+          test -s "out/VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.zip"
           (cd out && shasum -a 256 \
-            "WCode-$APP_VERSION-Ozon-Test-macos-$architecture.dmg" \
-            "WCode-$APP_VERSION-Ozon-Test-macos-$architecture.zip" \
-            > "WCode-$APP_VERSION-Ozon-Test-macos-$architecture.sha256")
+            "VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.dmg" \
+            "VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.zip" \
+            > "VN-code-$APP_VERSION-Ozon-Test-macos-$architecture.sha256")
 
       - name: Preserve macOS test packages
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: WCode-${{ env.APP_VERSION }}-Ozon-Test-macOS-${{ matrix.architecture }}
+          name: VN-code-${{ env.APP_VERSION }}-Ozon-Test-macOS-${{ matrix.architecture }}
           path: |
-            out/WCode-${{ env.APP_VERSION }}-Ozon-Test-macos-${{ matrix.architecture }}.dmg
-            out/WCode-${{ env.APP_VERSION }}-Ozon-Test-macos-${{ matrix.architecture }}.zip
-            out/WCode-${{ env.APP_VERSION }}-Ozon-Test-macos-${{ matrix.architecture }}.sha256
+            out/VN-code-${{ env.APP_VERSION }}-Ozon-Test-macos-${{ matrix.architecture }}.dmg
+            out/VN-code-${{ env.APP_VERSION }}-Ozon-Test-macos-${{ matrix.architecture }}.zip
+            out/VN-code-${{ env.APP_VERSION }}-Ozon-Test-macos-${{ matrix.architecture }}.sha256
           if-no-files-found: error
           retention-days: 14
