@@ -10,7 +10,7 @@ VN code là ứng dụng desktop JavaFX cho người bán **Wildberries** và **
 - Lưu lịch sử in, template và dữ liệu cục bộ trong SQLite.
 
 Dự án: https://github.com/ntccong2468-lab/Vncode.
-Mã nguồn gốc WCode do Nguyễn Anh Tuấn / TuanDev phát triển; VN code là bản fork tùy chỉnh.
+Mã nguồn gốc VNcode do Nguyễn Thành Công phát triển
 
 ## Công nghệ
 
@@ -25,7 +25,7 @@ Mã nguồn gốc WCode do Nguyễn Anh Tuấn / TuanDev phát triển; VN code 
 
 ## Tải bản Windows
 
-Bản **VN code 1.1.34** là ứng dụng riêng, cài song song với WCode, giữ các chức năng đã phát triển.
+Bản **VN code 1.1.34** là ứng dụng riêng.
 [Tải bộ cài Windows x64](https://github.com/ntccong2468-lab/Vncode/releases/download/v1.1.34/VN-code-1.1.34-Windows-x64.exe).
 Java được đóng gói kèm; tải EXE rồi chạy để cài đặt. Đây là prerelease chưa ký Authenticode.
 Xem [mô tả và giới hạn](docs/releases/VN-code-1.1.34.md).
