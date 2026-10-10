@@ -1,0 +1,58 @@
+{
+  "appName": "VN code",
+  "version": "1.1.34",
+  "repository": "ntccong2468-lab/Vncode",
+  "sourceCommit": "bfa5a689a0329b9f770f30aeefa62f071ba9d86c",
+  "githubRunId": 37845191448,
+  "githubRunUrl": "https://github.com/ntccong2468-lab/Vncode/actions/runs/37845191448",
+  "javaFxmlTests": {
+    "run": 551,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "platforms": [
+      "linux",
+      "windows"
+    ]
+  },
+  "nodeContracts": {
+    "run": 23,
+    "failures": 0
+  },
+  "nativeSmoke": {
+    "historyPreserved": true,
+    "nativeLauncher": "passed",
+    "appName": "VN code",
+    "version": "1.1.34",
+    "platform": "windows-x64",
+    "schemaMigration": "3 to 4",
+    "windowTitle": "VN code v1.1.34",
+    "liveMarketplaceMutations": false,
+    "rollbackSnapshotVerified": true
+  },
+  "sideBySideSmoke": {
+    "uninstallPreservesWcode": true,
+    "independentRegistrations": true,
+    "result": "passed",
+    "liveMarketplaceMutations": false,
+    "version": "1.1.34",
+    "platform": "windows-x64",
+    "wcodeVersion": "1.1.75",
+    "wcodeFilesUnchanged": true,
+    "appName": "VN code",
+    "windowTitle": "VN code v1.1.34",
+    "freshVncodeData": true,
+    "installerUpgradeUuid": "8CBBA0E2-6E73-4F56-9101-6BC0948D3C72"
+  },
+  "installer": {
+    "filename": "VN-code-1.1.34-Windows-x64.exe",
+    "bytes": 140996096,
+    "sha256": "d3970ee5ca88f72a810bbedb807c84cdb7201b96c0d2ef132d0a7a01cea6ac79",
+    "architecture": "x86_64",
+    "authenticodeSigned": false
+  },
+  "liveWbOzonGtinWriteEnabled": false,
+  "signedUpdateManifestPublished": false,
+  "projectDeveloper": "Nguyễn Thành Công",
+  "publicationMetadataUpdatedOn": "2026-10-10"
+}

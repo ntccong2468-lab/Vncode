@@ -1,0 +1,95 @@
+{
+  "repository": "ntccong2468-lab/Vncode",
+  "releases": [
+    {
+      "tag": "v1.1.34",
+      "id": 407276912,
+      "title": "VN code 1.1.34 — Windows",
+      "sourceCommit": "bfa5a689a0329b9f770f30aeefa62f071ba9d86c",
+      "targetCommitish": "bfa5a689a0329b9f770f30aeefa62f071ba9d86c",
+      "draft": false,
+      "prerelease": true,
+      "hasFeatureStatus": false,
+      "originalAssets": [
+        {
+          "id": 623055795,
+          "name": "build-info.json",
+          "size": 1784,
+          "digest": "sha256:1deb8ef80d40868505b419bd5a98f7d9d34bf6b6189af6c315b976d9a7887720"
+        },
+        {
+          "id": 623055940,
+          "name": "checksums.sha256",
+          "size": 436,
+          "digest": "sha256:3d7e93f466a344cd2ee7be0126acd07c34aa3de3c9ed3e31d9c913331deebd4b"
+        },
+        {
+          "id": 623055662,
+          "name": "native-smoke.json",
+          "size": 288,
+          "digest": "sha256:4db4c6369101f4fa6cd430a8d7e3273af090134539a98bbfcb36fd2faa9e79b9"
+        },
+        {
+          "id": 623055863,
+          "name": "release-notes.md",
+          "size": 3360,
+          "digest": "sha256:056fdf0198f9387396167a7205d65a84add87492fdf41802a6c46e07d8ed012f"
+        },
+        {
+          "id": 623055718,
+          "name": "side-by-side-smoke.json",
+          "size": 411,
+          "digest": "sha256:b5221043ac73add780e21a5369b278fdc646ac4a26c47554b5cbb184b370add4"
+        },
+        {
+          "id": 623055327,
+          "name": "VN-code-1.1.34-Windows-x64.exe",
+          "size": 140996096,
+          "digest": "sha256:d3970ee5ca88f72a810bbedb807c84cdb7201b96c0d2ef132d0a7a01cea6ac79"
+        }
+      ]
+    },
+    {
+      "tag": "v1.1.33",
+      "id": 406111854,
+      "title": "VN code 1.1.33 — Windows",
+      "sourceCommit": "3b5c725ec8b481556cb6635859b08dcdb66ab053",
+      "targetCommitish": "feat/windows-gtin-sync-20261006",
+      "draft": false,
+      "prerelease": true,
+      "hasFeatureStatus": false,
+      "originalAssets": [
+        {
+          "id": 619680910,
+          "name": "build-info.json",
+          "size": 1246,
+          "digest": "sha256:d5f412550ef2cf370ab158fd14f217238e124543129f3be33b05c71a755c7bd7"
+        },
+        {
+          "id": 619680991,
+          "name": "checksums.sha256",
+          "size": 345,
+          "digest": "sha256:b8c60c79e7d9108db5e6fde1a1d25145c54af6267e629c1feb45585122d70c0a"
+        },
+        {
+          "id": 619680872,
+          "name": "native-smoke.json",
+          "size": 226,
+          "digest": "sha256:cf112f17837cf2cd2ed27c0934fedbadacc97aff8e91cb4ad3f0b0f7137b4e5d"
+        },
+        {
+          "id": 619680953,
+          "name": "release-notes.md",
+          "size": 4118,
+          "digest": "sha256:762e78a8a379cc384cb9c5f67415d26a3a9f9549622d935bad242ab1ca8d42f0"
+        },
+        {
+          "id": 619680626,
+          "name": "Vncode-1.1.33-Windows-x64.exe",
+          "size": 141037056,
+          "digest": "sha256:4214ed4a5f0f230389a69f87089404ad8ef200ba4f05dea75d4230e5eeee2731"
+        }
+      ]
+    }
+  ]
+}
