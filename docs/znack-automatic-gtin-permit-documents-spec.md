@@ -2,7 +2,7 @@
 
 ## Objective
 
-WCode must obtain the permit documents registered on each GTIN product card and use those exact
+ứng dụng tham chiếu must obtain the permit documents registered on each GTIN product card and use those exact
 documents when submitting `LP_INTRODUCE_GOODS`. A user must not enter or maintain a shop-wide
 default goods document.
 
@@ -21,7 +21,7 @@ inactive document from being submitted for circulation.
 - National Catalog `/v4/rd-info-by-gtin` is the authoritative pre-submission check for the selected
   GTIN. Only status group `1` (green/valid for introduction), or the equivalent documented active
   status when the optional group is absent, may be submitted.
-- `certificate_document_data` is an array. WCode applies a deterministic type priority to the
+- `certificate_document_data` is an array. ứng dụng tham chiếu applies a deterministic type priority to the
   active documents returned for the GTIN: use all active `CONFORMITY_DECLARATION` documents when
   present; otherwise use all active `CONFORMITY_CERTIFICATE` documents. The number and issue date
   always come from the same selected registry document. If neither conformity type exists, the
@@ -80,22 +80,22 @@ public record GoodsDocument(String type, String number, String date) {
 
 ## Functional behavior
 
-1. During GTIN synchronization, WCode parses every supported permit-document attribute returned in
+1. During GTIN synchronization, ứng dụng tham chiếu parses every supported permit-document attribute returned in
    `good_attrs`, including both declaration attribute `23557` and certificate attribute `23561`,
    and stores the complete list against that shop and GTIN.
 2. A successful card response with no permit-document attributes clears previously synchronized
    documents. A failed/partial catalog request does not erase the last successful data.
-3. Immediately before creating an introduction document, WCode calls `/v4/rd-info-by-gtin` with the
+3. Immediately before creating an introduction document, ứng dụng tham chiếu calls `/v4/rd-info-by-gtin` with the
    same GTIN and the configured owner/participant INN.
-4. WCode selects the currently active declaration documents returned by that check. If none exist,
+4. ứng dụng tham chiếu selects the currently active declaration documents returned by that check. If none exist,
    it falls back to the currently active conformity certificates, then to the already-supported
    state-registration documents. It replaces the stored list with the selected documents and builds
    `certificate_document_data` from exactly that list.
-5. WCode never falls back to `znack_settings.document_number`, `document_date`, or `document_type`.
-6. If no active permit document is available, WCode does not submit an introduction document. The
+5. ứng dụng tham chiếu never falls back to `znack_settings.document_number`, `document_date`, or `document_type`.
+6. If no active permit document is available, ứng dụng tham chiếu does not submit an introduction document. The
    already purchased KIZ codes remain retryable and the error tells the user to correct/publish the
    permit document on the National Catalog GTIN card.
-7. Retrying introduction repeats the authoritative lookup, so no manual WCode metadata edit is
+7. Retrying introduction repeats the authoritative lookup, so no manual ứng dụng tham chiếu metadata edit is
    required after the National Catalog card is corrected.
 8. The settings UI no longer displays the default document number/date fields. Legacy database
    columns remain readable for backward-compatible migration but are not used for new submissions.
@@ -156,17 +156,17 @@ public record GoodsDocument(String type, String number, String date) {
   retryable status; purchased codes are retained.
 - A GTIN card with no complete permit document is visible in Trash and absent from operational
   mapping and purchase lists after synchronization.
-- Correcting the GTIN card and retrying succeeds without editing WCode settings.
+- Correcting the GTIN card and retrying succeeds without editing ứng dụng tham chiếu settings.
 - Existing databases migrate additively and pass SQLite integrity/foreign-key checks.
 - Focused tests, FXML smoke tests and `./mvnw -B clean verify` pass.
 
 ## Assumptions requiring approval
 
 1. The current scope is the existing `lp` (light industry) `LP_INTRODUCE_GOODS` workflow.
-2. WCode should submit all active documents of the preferred type: declarations first, or
+2. ứng dụng tham chiếu should submit all active documents of the preferred type: declarations first, or
    conformity certificates only when no active declaration is available. It must not arbitrarily
    combine fields or select an incomplete document.
-3. Missing, inactive or unverifiable documents must block submission and remain retryable; WCode
+3. Missing, inactive or unverifiable documents must block submission and remain retryable; ứng dụng tham chiếu
    must not silently continue or use legacy defaults.
 4. The production National Catalog base is the officially documented
    `https://апи.национальный-каталог.рф`; the documented sandbox base is used when running against a

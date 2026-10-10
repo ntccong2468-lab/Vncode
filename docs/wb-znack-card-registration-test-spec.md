@@ -3,7 +3,7 @@
 ## Confirmed data model
 
 - A WB `vendorCode` (article) represents the color-level product card in the current seller catalog.
-- Every real WB size is identified by `sizes[].chrtID`; therefore WCode creates one National Catalog card/GTIN per existing size, never a Cartesian product of colors and sizes.
+- Every real WB size is identified by `sizes[].chrtID`; therefore ứng dụng tham chiếu creates one National Catalog card/GTIN per existing size, never a Cartesian product of colors and sizes.
 - This test stops after the National Catalog card is published. It deliberately does not change the WB card or its `sizes[].skus` values.
 
 ## Guarded test workflow

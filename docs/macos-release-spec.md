@@ -1,8 +1,8 @@
-# Spec: macOS artifacts for WCode releases
+# Spec: macOS artifacts for ứng dụng tham chiếu releases
 
 ## Objective
 
-Every tagged WCode JavaFX release must publish runnable macOS packages alongside the existing Windows packages. Intel and Apple Silicon Macs receive native builds so JavaFX and SQLite native libraries match the target CPU.
+Every tagged ứng dụng tham chiếu JavaFX release must publish runnable macOS packages alongside the existing Windows packages. Intel and Apple Silicon Macs receive native builds so JavaFX and SQLite native libraries match the target CPU.
 
 ## Tech Stack
 

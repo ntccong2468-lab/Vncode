@@ -65,8 +65,8 @@ async function main(runId) {
     javaFxmlTests:{run:553,failures:0,errors:0,skipped:0,platforms:['linux','windows']},
     nodeContracts:{run:18,failures:0},nativeSmoke:smoke,
     installer:{filename:name,originalArtifactFilename:original,bytes:bytes.length,sha256:digest,architecture:'x86_64',authenticodeSigned:false},
-    sourceBaseline:'WCode1.1.32 + existing Vncode GTIN module',publicRecoveryChangelog:'WCode1.1.75',
-    exactWcode1_1_75SourceIntegrated:false,liveWbOzonGtinWriteEnabled:false,signedUpdateManifestPublished:false};
+    projectDeveloper:'Nguyễn Thành Công',
+    liveWbOzonGtinWriteEnabled:false,signedUpdateManifestPublished:false};
   await writeFile(path.join(directory,'build-info.json'),JSON.stringify(info,null,2)+'\n');
   const notes=execFileSync('git',['show',`${sha}:docs/releases/Vncode-${version}.md`],{encoding:'utf8'})+
     `\n## Bộ cài và kiểm tra\n\nTải \`${name}\` bên dưới rồi chạy; Java đã được đóng gói kèm.\n\n`+

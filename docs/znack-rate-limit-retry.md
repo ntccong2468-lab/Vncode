@@ -82,7 +82,7 @@ if (response.code() == 429 && isIdempotent(request) && attempt < MAX_ATTEMPTS) {
 - Repeated 429 responses terminate predictably within the attempt/time budget.
 - State-changing calls are never retried by this policy.
 - Partial catalog enrichment is visible in persisted operation logs.
-- Targeted and full WCode verification pass.
+- Targeted and full ứng dụng tham chiếu verification pass.
 
 ## Open questions
 

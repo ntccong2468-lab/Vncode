@@ -1,4 +1,4 @@
-name: Create WCode JavaFX release
+name: Create VN code JavaFX release
 
 on:
   push:
@@ -271,7 +271,7 @@ jobs:
             if ($certificate -and (Test-Path $certificate)) { Remove-Item $certificate -Force }
           }
 
-      - name: Verify install-over upgrade from WCode 1.1.9
+      - name: Verify legacy installer upgrade
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -449,7 +449,7 @@ jobs:
               'Xuất tem KIZ 58×40 nét hơn, có DataMatrix và logo Честный ЗНАК',
               'Hướng dẫn người dùng ký điều khoản mới khi Znack trả lỗi 3055',
               'Tự dọn supply WB cũ khi WB xác nhận supply không còn tồn tại',
-              'Giữ nguyên dữ liệu người dùng khi nâng cấp từ WCode 1.1.9 trở lên'
+              'Giữ dữ liệu VN code khi nâng cấp phiên bản ứng dụng'
             )
             node tools/update-manifest.mjs release/WCode.msi release/update-manifest.json $env:APP_VERSION
           } else {
@@ -643,27 +643,27 @@ jobs:
             windows_trust_note=' Bộ cài Windows hiện chưa có chữ ký Authenticode.'
           fi
           notes="$(cat <<EOF
-          WCode ${APP_VERSION}
+          VN code ${APP_VERSION}
 
           - Chỉ KIZ có trạng thái pháp lý IN_CIRCULATION mới được hiển thị là khả dụng và cấp cho WB/Ozon; KIZ đang chờ hoặc lưu thông lỗi được giữ lại để xử lý nhưng không thể dùng nhầm.
           - Thêm nút xuất tem KIZ 58×40: chọn số lượng, lưu PDF gồm DataMatrix, tên sản phẩm, giới tính và size, sau đó tự mở file.
           - Thêm thao tác lưu trữ KIZ lỗi; chỉ KIZ thuộc pipeline INTRODUCTION_FAILED mới được phép lưu trữ, không ảnh hưởng KIZ đang chờ hay còn có thể tiếp tục.
-          - Khi Znack trả lỗi 3590 do không đủ tiền, WCode hiện thông báo và nút Thử lại để tiếp tục đúng pipeline mua KIZ đã lưu, không tạo đơn mua trùng.
+          - Khi Znack trả lỗi 3590 do không đủ tiền, VN code hiện thông báo và nút Thử lại để tiếp tục đúng pipeline mua KIZ đã lưu, không tạo đơn mua trùng.
           - Đồng bộ và lưu thông GTIN hỗ trợ cả Декларация о соответствии và Сертификат соответствия, ưu tiên giấy công bố rồi dùng giấy chứng nhận khi cần.
           - Đọc đúng giấy chứng nhận, ngày giấy tờ, giới tính và size từ cả schema API chính thức lẫn schema thẻ GTIN của National Catalog; GTIN hợp lệ trong thùng rác được tự khôi phục.
-          - Khi mở app hoặc chủ động chọn cửa hàng có pipeline cũ đang chờ giấy tờ, WCode tự đồng bộ GTIN và tiếp tục lưu thông bằng chính KIZ đã mua, không mua trùng và không spam cửa sổ ký của cửa hàng khác.
+          - Khi mở app hoặc chủ động chọn cửa hàng có pipeline cũ đang chờ giấy tờ, VN code tự đồng bộ GTIN và tiếp tục lưu thông bằng chính KIZ đã mua, không mua trùng và không spam cửa sổ ký của cửa hàng khác.
           - GTIN thiếu giấy tờ được thông báo bằng một dialog gọn có mã GTIN và tên sản phẩm; chi tiết kỹ thuật lặp lại không còn chiếm chỗ dưới từng item.
-          - Khi Znack trả lỗi 3055, WCode hướng dẫn vào Маркировка → tên người dùng → Документы от оператора để ký điều khoản mới và chờ hệ thống xử lý tối đa 48 giờ.
+          - Khi Znack trả lỗi 3055, VN code hướng dẫn vào Маркировка → tên người dùng → Документы от оператора để ký điều khoản mới và chờ hệ thống xử lý tối đa 48 giờ.
           - Tem KIZ 58×40 dùng DataMatrix vector lớn, chữ rõ hơn, logo Честный ЗНАК và ưu tiên giới tính/size đồng bộ trực tiếp từ thẻ GTIN.
           - Trạng thái kiểm tra KIZ EMITTED được hiển thị gọn là “Đang chờ lưu thông”.
           - Tự xoá supply WB cũ khỏi danh sách khi WB xác nhận supply không còn tồn tại bằng 404; lỗi tạm thời không làm mất dữ liệu.
 
-          Khi nâng cấp từ 1.1.9, dữ liệu hiện có được sao chép an toàn sang thư mục WCodeData trước khi áp dụng schema mới. Các gói macOS hiện chưa được Apple notarize.${windows_trust_note}
+          Khi nâng cấp từ 1.1.9, dữ liệu hiện có được sao chép an toàn sang thư mục dữ liệu ứng dụng trước khi áp dụng schema mới. Các gói macOS hiện chưa được Apple notarize.${windows_trust_note}
           EOF
           )"
           if gh release view "$RELEASE_TAG" --repo "$RELEASE_REPO" >/dev/null 2>&1; then
-            gh release edit "$RELEASE_TAG" --repo "$RELEASE_REPO" --title "WCode $APP_VERSION" --notes "$notes" --latest
+            gh release edit "$RELEASE_TAG" --repo "$RELEASE_REPO" --title "VN code $APP_VERSION" --notes "$notes" --latest
           else
-            gh release create "$RELEASE_TAG" --repo "$RELEASE_REPO" --title "WCode $APP_VERSION" --notes "$notes" --latest
+            gh release create "$RELEASE_TAG" --repo "$RELEASE_REPO" --title "VN code $APP_VERSION" --notes "$notes" --latest
           fi
           gh release upload "$RELEASE_TAG" --repo "$RELEASE_REPO" release/* --clobber
